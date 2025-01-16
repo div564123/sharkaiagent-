@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shark AI Agent</title>
+    <style>
+      body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            position: relative;
+        }
+        .chat-container {
+            width: 50%;
+            height: 500px;
+            border: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            margin-top: 60px; /* Adds space at the top for the logo */
+            border: 2px inset #808080; /* Simulates an inset border for that old Windows look */
+            border-radius: 0; /* Sharp corners */
+            box-shadow: inset 0 0 5px #808080;
+            padding: 20px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        /* User messages */
+        .user-message {
+            background-color: #000;
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        /* AI messages */
+        .ai-message {
+            background-color: #e5e5ea; /* Light gray for AI messages, like iMessage */
+            color: black;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* AI logo within messages */
+        .ai-logo {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        /* New styles for the AI's initial message */
+        .ai-message span {
+            font-size: 14px;
+        }
+
+        /* Simple AI logo in the middle */
+        .logo {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000; /* Dark background for the logo text */
+            color: #fff; /* White text for contrast */
+            padding: 5px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10; /* Ensure the logo is above other content */
+        }
+
+        /* Image logo on the left */
+        .logo-image {
+            position: absolute;
+            top: 10px;  /* Adjust from top */
+            left: 10px; /* Adjust from left */
+            height: 40px; /* Increased height for a bigger logo */
+            z-index: 11; /* Ensure image is above the logo text */
+        }
+
+        /* X link in the right corner */
+        .x-link {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+            color: #000; 
+            text-decoration: none; 
+            font-weight: bold;
+            font-size: 20px; 
+            background: #f0f0f0; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            z-index: 10;
+        }
+
+        @keyframes scan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 100%; }
+        }
+</style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="logo">SHARK AI AGENT</div>
+    <img src="c47bc5f0-cb12-4e33-a878-fb2b03d7919c.img" alt="Logo" class="logo-image">
+    <a href="https://x.com/simpleaiagent" class="x-link" target="_blank" rel="noopener noreferrer">X</a> 
+    <div id="chat-window"></div>
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button id="send-btn">Send</button> <!-- Corrected ID from 'send-button' to 'send-btn' -->
+  </div>
+  <div class="hacker-effect"></div>
+  <script>
+    const API_URL = "${process.env.API_URL || '/ai-response'}";
+    const chatWindow = document.getElementById('chat-window');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    function appendMessage(message, isUser = false) {
+        const messageElement = document.createElement('div');
+        messageElement.className = isUser ? 'message user-message' : 'message ai-message';
+        
+        if (isUser) {
+            messageElement.textContent = `You: ${message}`;
+        } else {
+            const logo = document.createElement('img');
+            logo.src = 'c47bc5f0-cb12-4e33-a878-fb2b03d7919c.img'; 
+            logo.alt = 'AI Logo';
+            logo.className = 'ai-logo';
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = message;
+            messageElement.appendChild(logo);
+            messageElement.appendChild(textSpan);
+        }
+        chatWindow.appendChild(messageElement);
+        chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to the bottom
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const initialMessageText = "Hi there! I'm Shark, your AI assistant. Just let me know how I can make your day easier! - I can help you find information, answer questions, provide recommendations, or assist with tasks.";
+        appendMessage(initialMessageText, false);
+    });
+
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === '') return; // Do nothing if the message is empty
+
+        // Display user message immediately
+        appendMessage(message, true);
+
+        // Clear the input field
+        userInput.value = '';
+
+        // Send the message to your backend instead of directly to an external API
+        fetch('/ai-response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.answer) { 
+                const aiResponse = data.answer;
+                appendMessage(aiResponse);
+            } else {
+                appendMessage('An error occurred with the AI response.', false);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            appendMessage('Sorry, an error has occurred.', false);
+        });
+    }
+
+    // Event listener for the send button
+    sendBtn.addEventListener('click', sendMessage);
+
+    // Optional: Event listener for Enter key in the input field
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+</body>
+</html>
