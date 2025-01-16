@@ -1,6 +1,7 @@
 require('dotenv').config(); 
+console.log(process.env.API_KEY
 
-// Importer les modules nécessaires
+
 const express = require('express');
 const app = express();
 const fetch = require('node-fetch'); 
