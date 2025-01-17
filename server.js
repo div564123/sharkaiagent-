@@ -36,11 +36,11 @@ app.post('/ai-response', async (req, res) => {
         'Authorization': `Bearer ${process.env.API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: "text-davinci-003", // ou le modèle que vous utilisez
-        prompt: message,
-        max_tokens: 1000  // ajustez selon vos besoins
-      })
+     body: JSON.stringify({
+  model: "gpt-4.0-turbo",
+  messages: [{role: "user", content: message}],
+  max_tokens: 1000
+})
     });
 
     if (!response.ok) {
