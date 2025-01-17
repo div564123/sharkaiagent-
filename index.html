@@ -125,8 +125,8 @@
     <button id="send-btn">Send</button> <!-- Corrected ID from 'send-button' to 'send-btn' -->
   </div>
   <div class="hacker-effect"></div>
-  <script>
-    const API_URL = "${process.env.API_URL || '/ai-response'}";
+    <script>
+   const API_URL = "${process.env.API_URL || '/ai-response'}";
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
@@ -186,7 +186,7 @@
         })
         .catch(error => {
             console.error('Erreur:', error);
-            appendMessage('an error occurred', false);
+            appendMessage('Sorry, an error has occurred.', false);
         });
     }
 
