@@ -71,8 +71,3 @@ app.post('/ai-response', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch AI response' });
   }
 });
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
