@@ -19,6 +19,8 @@ app.post('/ai-response', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch AI response' });
     }
 });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const myURL = new URL('http://www.sharkaiagent.xyz/');
 
 // Middleware pour parser le JSON dans les requêtes
