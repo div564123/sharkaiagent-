@@ -37,7 +37,7 @@ app.post('/ai-response', async (req, res) => {
         'Content-Type': 'application/json'
       },
      body: JSON.stringify({
-  model: "gpt-4.0-turbo",
+  model: "gpt-4o",
   messages: [{role: "user", content: message}],
   max_tokens: 1000
 })
