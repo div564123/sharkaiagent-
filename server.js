@@ -1,14 +1,24 @@
-require('dotenv').config(); 
-console.log(process.env.API_KEY
-
-
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const fetch = require('node-fetch'); 
-if (!process.env.API_KEY) {
-  console.error('API_KEY is not set in the environment variables');
-  process.exit(1); // Arrête le script avec un code d'erreur
-}
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,  // Load from environment variables
+});
+app.post('/ai-response', async (req, res) => {
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: req.body.message }], // Assuming you're passing the message in the request body
+            store: true
+        });
+        res.json({ answer: completion.choices[0].message.content });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Failed to fetch AI response' });
+    }
+});
 const myURL = new URL('http://www.sharkaiagent.xyz/');
 
 // Middleware pour parser le JSON dans les requêtes
